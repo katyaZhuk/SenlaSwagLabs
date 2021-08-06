@@ -8,16 +8,27 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class ProductsPage {
 
-    public static final SelenideElement TITLE = $(".title");
-    public static final SelenideElement ADD_TO_CART_BUTTON = $("#add-to-cart-sauce-labs-backpack");
-    public static final SelenideElement SHOPPING_CART = $(".shopping_cart_link");
+    private static final SelenideElement PAGE_TITLE = $(".title");
+    private static final SelenideElement ADD_TO_CART_BUTTON = $("#add-to-cart-sauce-labs-backpack");
+    private static final SelenideElement SHOPPING_CART_BUTTON = $(".shopping_cart_link");
 
-    static ElementsCollection addedItemsCollection = $$(By.xpath("//button[contains(text(), 'Add to cart')]"));
+    private static final ElementsCollection ADDED_ELEMENTS_COLLECTION =
+            $$(By.xpath("//button[contains(text(), 'Add to cart')]"));
+
+    public static String getTitleText() {
+        return PAGE_TITLE.getText();
+    }
+
+    public static void goToShoppingCart() {
+        SHOPPING_CART_BUTTON.click();
+    }
+
+    public static void addToCart() {
+        ADD_TO_CART_BUTTON.click();
+    }
 
     public static void addItemsToCart() {
-        for (SelenideElement elem : addedItemsCollection) {
-            elem.click();
-        }
+        ADDED_ELEMENTS_COLLECTION.forEach(SelenideElement::click);
     }
 
 }

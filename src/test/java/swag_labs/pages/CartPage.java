@@ -8,16 +8,24 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CartPage {
 
-    public static final SelenideElement CHECKOUT_BUTTON = $("#checkout");
+    private static final SelenideElement CHECKOUT_BUTTON = $("#checkout");
 
-    static ElementsCollection removedItemsCollection = $$(By.xpath("//button[contains(text(), 'Remove')]"));
+    private static final ElementsCollection REMOVED_ITEMS_COLLECTION =
+            $$(By.xpath("//button[contains(text(), 'Remove')]"));
+    private static final ElementsCollection ITEMS_IN_CART = $$(".cart_item");
+
+    public static void clickOnCheckoutButton() {
+        CHECKOUT_BUTTON.click();
+    }
 
     public static void removeItemsFromCart() {
-        for (SelenideElement elem : removedItemsCollection) {
+        for (SelenideElement elem : REMOVED_ITEMS_COLLECTION) {
             elem.click();
         }
     }
 
-    public static ElementsCollection itemsInCart = $$(".cart_item");
+    public static int getItemsAmountInCart() {
+        return ITEMS_IN_CART.size();
+    }
 
 }

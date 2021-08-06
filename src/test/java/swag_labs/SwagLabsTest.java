@@ -2,90 +2,78 @@ package swag_labs;
 
 import org.junit.jupiter.api.*;
 
-import com.codeborne.selenide.*;
-
 import java.io.IOException;
 
-import static com.codeborne.selenide.Selenide.*;
 import static swag_labs.pages.CartPage.*;
 import static swag_labs.pages.LoginPage.*;
 import static swag_labs.pages.OverviewPage.*;
 import static swag_labs.pages.ProductsPage.*;
 import static swag_labs.pages.YourInfoPage.*;
 import static swag_labs.pages.CompletePage.*;
+import static utils.Driver.openMaximizedWindow;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SwagLabsTest {
 
-    @BeforeEach
-    public void setUp() throws IOException {
-        Configuration.startMaximized = true;
+    @BeforeAll
+    public void setUp() {
+        openMaximizedWindow();
+    }
 
+    @BeforeEach
+    @Order(1)
+    @Test
+    public void loginTest() throws IOException {
         openLoginPage();
         login();
-
+        Assertions.assertEquals("PRODUCTS", getTitleText());
     }
 
-    @Test
-    public void loginTest() {
-        Assertions.assertEquals("PRODUCTS", TITLE.getText());
-    }
-
+    @Order(2)
     @Test
     public void buyItemTest() {
-        ADD_TO_CART_BUTTON.click();
-        SHOPPING_CART.click();
-
-        CHECKOUT_BUTTON.click();
-
+        addToCart();
+        goToShoppingCart();
+        clickOnCheckoutButton();
         provideInfoToFields("any", "any", "123456");
-
-        FINISH_BUTTON.click();
+        clickOnFinishButton();
 
         Assertions.assertEquals("THANK YOU FOR YOUR ORDER",
-                COMPLETE_ORDER.getText());
+                getCompleteOrderText());
     }
 
-
+    @Order(3)
     @Test
     public void cancelOrderTest() {
-        ADD_TO_CART_BUTTON.click();
-        SHOPPING_CART.click();
-
-        CHECKOUT_BUTTON.click();
-
+        addToCart();
+        goToShoppingCart();
+        clickOnCheckoutButton();
         provideInfoToFields("any", "any", "123456");
+        clickOnCancelButton();
 
-        CANCEL_BUTTON.click();
-
-        Assertions.assertEquals("PRODUCTS", TITLE.getText());
+        Assertions.assertEquals("PRODUCTS", getTitleText());
     }
 
+    @Order(4)
     @Test
     public void deleteAllItemsFromCartTest() {
         addItemsToCart();
-
-        SHOPPING_CART.click();
-
+        goToShoppingCart();
         removeItemsFromCart();
 
-        Assertions.assertEquals(0, itemsInCart.size());
+        Assertions.assertEquals(0, getItemsAmountInCart());
     }
 
+    @Order(5)
     @Test
     public void checkTotalTest() {
         addItemsToCart();
-        SHOPPING_CART.click();
-        CHECKOUT_BUTTON.click();
-
+        goToShoppingCart();
+        clickOnCheckoutButton();
         provideInfoToFields("any", "any", "123456");
 
         Assertions.assertEquals(findItemTotal(), countTotal());
-    }
-
-    @AfterEach
-    public void tearDown() {
-        closeWebDriver();
     }
 
 }

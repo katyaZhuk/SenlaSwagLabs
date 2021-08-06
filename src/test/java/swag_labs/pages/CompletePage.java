@@ -6,6 +6,10 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CompletePage {
 
-    public static final SelenideElement COMPLETE_ORDER = $(".complete-header");
+    private static final SelenideElement COMPLETE_ORDER_TITLE = $(".complete-header");
+
+    public static String getCompleteOrderText() {
+        return COMPLETE_ORDER_TITLE.getText();
+    }
 
 }

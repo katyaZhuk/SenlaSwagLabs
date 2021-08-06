@@ -7,25 +7,28 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class OverviewPage {
 
-    public static final SelenideElement FINISH_BUTTON = $("#finish");
-    public static final SelenideElement CANCEL_BUTTON = $("#cancel");
-    public static SelenideElement itemTotal = $(".summary_subtotal_label");
+    private static final SelenideElement FINISH_BUTTON = $("#finish");
+    private static final SelenideElement CANCEL_BUTTON = $("#cancel");
+    private static final SelenideElement ITEM_TOTAL = $(".summary_subtotal_label");
 
-    static ElementsCollection prisesCollection = $$(".inventory_item_price");
+    private static final ElementsCollection PRICES_COLLECTION = $$(".inventory_item_price");
+
+    public static void clickOnFinishButton() {
+        FINISH_BUTTON.click();
+    }
+
+    public static void clickOnCancelButton() {
+        CANCEL_BUTTON.click();
+    }
 
     public static double countTotal() {
-        double result = 0;
-
-        for (SelenideElement elem : prisesCollection) {
-            double element = Double.parseDouble(elem.getText().substring(1));
-            result += element;
-        }
-
-        return result;
+        return PRICES_COLLECTION.stream()
+                .mapToDouble(elem -> Double.parseDouble(elem.getText().substring(1)))
+                .sum();
     }
 
     public static double findItemTotal() {
-        return Double.parseDouble(itemTotal.getText().split("\\$")[1]);
+        return Double.parseDouble(ITEM_TOTAL.getText().split("\\$")[1]);
     }
 
 }
